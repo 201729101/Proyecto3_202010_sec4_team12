@@ -231,6 +231,12 @@ public class Modelo
 			return Math.pow(Math.sin(val / 2), 2);
 		}
 	}
+	
+	public double getDist(double startLat, double startLong, double endLat, double endLong)
+	{
+		Haversine dis = new Haversine();
+		return dis.distance(startLat, startLong, endLat, endLong);
+	}
 
 	/**
 	 * Escribe un archivo JSON con los datos del grafo
@@ -288,9 +294,11 @@ public class Modelo
 	 * @param path Ruta del archivp
 	 * @return String con numero de vertices y arcos.
 	 */
-	public void leerArchivo(String path)
+	public Vertice leerArchivo(String path)
 	{
 		tablaSec = new TablaSectores();
+		int mayor = 0;
+		Vertice may = null;
 		JsonReader reader;
 		try 
 		{
@@ -303,6 +311,11 @@ public class Modelo
 				double lat = e.getAsJsonObject().get("LATITUD").getAsDouble();
 				tablaSec.agregar(lat, lon, id);
 				Vertice vert = new Vertice(id,lon,lat);
+				if(id>mayor)
+				{
+					mayor = id;
+					may = vert;
+				}
 				grafo.addVertex(id, vert);
 				JsonArray arcos = e.getAsJsonObject().get("arcos").getAsJsonArray();
 				for(JsonElement o:arcos)
@@ -313,10 +326,12 @@ public class Modelo
 					grafo.addEdge(id, ID, dis);
 				}
 			}
+			return may;
 		}
 		catch(Exception e)
 		{
 			e.printStackTrace();
+			return null;
 		}
 	}
 

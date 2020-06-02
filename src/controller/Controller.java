@@ -60,7 +60,7 @@ public class Controller {
 			switch(option){
 			case 1: 
 //				long startTime1 = System.currentTimeMillis();
-				modelo.leerArchivo("./data/Grafo.json");
+				Vertice mayorV = modelo.leerArchivo("./data/Grafo.json");
 				Estacion estMayor = modelo.cargarEstaciones("./data/estacionpolicia.geojson.json");
 				Comparendo mayor = modelo.cargarComparendos("./data/Comparendos_DEI_2018_Bogotá_D.C_50000_.geojson");
 				modelo.asignarCostosComparendos();
@@ -69,16 +69,24 @@ public class Controller {
 //				System.out.println("Tiempo: "+duration1);
 //				System.out.println(difComp());
 //				System.out.println(difEst());
+				view.printMessage("Numero de comparendos: "+modelo.comparendos.darTamano());
+				view.printSeparador();
 				view.printMessage("Comparendo con mayor OBJECTID:");
 				view.printComparendo(mayor);
 				view.printSeparador();
+				view.printMessage("Numero de estaciones: "+modelo.estaciones.darTamano());
 				view.printMessage("Estación con mayor OBJECTID:");
 				view.printEstación(estMayor);
 				view.printSeparador();
 				view.printMessage("Numero de vertices en el grafo: "+modelo.grafo.getrV());
 				view.printSeparador();
+				view.printMessage("Vertice con mayor ID:");
+				view.printVertice(mayorV);
 				view.printMessage("Numero de arcos en el grafo: "+modelo.grafo.E());
 				view.printSeparador();
+				view.printMessage("Arcos del mayor id:");
+				for(Object e: modelo.grafo.getEdges(mayorV.getId()))
+					view.printArco((Edge) e);
 				break;
 
 			case 2:
@@ -94,10 +102,12 @@ public class Controller {
 				double lon2 = Double.parseDouble(cords2[1]);
 				
 				Pila pila = modelo.caminoMasCorto(lat1, lon1, lat2, lon2);
+				double d = modelo.getDist(lat1, lon1, lat2, lon2);
+				view.printMessage("Distancia Haversiana: "+d);
 				double dist = (double) pila.pop();
 				JFrame frame2 = new JFrame("Grafito");
 				Mapa mapa2 = new Mapa(pila,view);
-				view.printMessage("Distancia del camino: "+dist);
+				view.printMessage("Distancia sumada camino: "+dist);
 				frame2.add(mapa2,BorderLayout.CENTER);
 				frame2.setSize(700,500);
 				frame2.setVisible(true);

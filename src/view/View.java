@@ -113,7 +113,7 @@ public class View
 		 */
 		public void printArco(Edge arco)
 		{
-			System.out.println("("+arco.getOrigen()+" <-- "+arco.getDestino()+")");
+			System.out.println("("+arco.getOrigen()+" --> "+arco.getDestino()+")");
 		}
 		
 		/**
